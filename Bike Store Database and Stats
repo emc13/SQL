@@ -1,0 +1,29 @@
+CREATE TABLE store_data (id INTEGER PRIMARY KEY, name TEXT, number_of_sales INTEGER, price INTEGER, profit_per_item INTEGER);
+
+INSERT INTO store_data VALUES (1,"Blue Bike", 3, 130, 80);
+INSERT INTO store_data VALUES (2, "Red Bike", 5, 130, 80);
+INSERT INTO store_data VALUES (3, "Green Bike", 8, 130, 80);
+INSERT INTO store_data VALUES (4, "Yellow Bike", 10, 130, 80);
+INSERT INTO store_data VALUES (5, "Tire Pump", 4, 30, 20);
+INSERT INTO store_data VALUES (6, "Bike Bell", 20, 20, 10);
+INSERT INTO store_data VALUES (7, "Training Bike", 7, 100, 75);
+INSERT INTO store_data VALUES (8, "Schwinn Bike", 20, 200, 130);
+INSERT INTO store_data VALUES (9, "Mountain Bike", 25, 250, 175);
+INSERT INTO store_data VALUES (10, "Helmet", 40, 30, 15);
+INSERT INTO store_data VALUES (11, "Kick Stand", 22, 40, 25);
+INSERT INTO store_data VALUES (12, "Bike Chain", 15, 60, 35);
+INSERT INTO store_data VALUES (13, "Bike Basket", 15, 50, 35);
+INSERT INTO store_data VALUES (14, "Bike Shorts", 55, 70, 45);
+INSERT INTO store_data VALUES (15, "Bike Tires", 44, 80, 50);
+
+-- display the database ordered by price.
+SELECT * FROM store_data ORDER BY price;
+
+-- What is the total profit for the store?
+SELECT SUM(profit_per_item * number_of_sales) AS total_profit
+FROM store_data;
+
+-- what are the top 3 best selling products?
+SELECT number_of_sales, name 
+FROM store_data 
+ORDER BY number_of_sales DESC LIMIT 3;
