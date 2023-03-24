@@ -1,0 +1,68 @@
+/* list of authors */
+CREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT, birthplace TEXT, number_of_books INTEGER);
+
+INSERT INTO authors VALUES (1, 'John Green', 'Indiana', 9);
+INSERT INTO authors VALUES (2, 'Sally Rooney', 'Ireland', 3);
+INSERT INTO authors VALUES (3, 'Taylor Jenkins Reid', 'Maryland', 8);
+INSERT INTO authors VALUES (4, 'Emily Henry', 'Ohio', 7);
+INSERT INTO authors VALUES (5, 'Lily King', 'Massachusetts', 5);
+INSERT INTO authors VALUES (6, 'Gillian Flynn', 'Missouri', 4);
+INSERT INTO authors VALUES (7, 'F.Scott Fitzgerald', 'Minnesota', 6);
+INSERT INTO authors VALUES (8, 'Layne Fargo', 'Illinois', 3);
+INSERT INTO authors VALUES (9, 'Suzanne Collins', 'Connecticut', 9);
+INSERT INTO authors VALUES (10, 'Olivie Blake', 'California', 8);
+INSERT INTO authors VALUES (11, 'Grady Hendrix', 'South Carolina', 15);
+INSERT INTO authors VALUES (12, 'Shirely Jackson', 'Vermont', 6);
+INSERT INTO authors VALUES (13, 'Stephen Chbosky', 'Pennsylvania', 2);
+INSERT INTO authors VALUES (14, 'Alice Walker', 'Georgia', 13);
+INSERT INTO authors VALUES (15, 'George R. R. Martin', 'New Jersey', 22);
+
+/*random list of books from my goodreads shelf*/
+CREATE TABLE goodreads_bookshelf (id INTEGER PRIMARY KEY, title TEXT, author TEXT, page_count INTEGER, release_year INTEGER, bookshelf TEXT, goodreads_rating INTEGER, personal_rating INTEGER);
+
+INSERT INTO goodreads_bookshelf VALUES (1, 'The Hunger Games', 'Suzanne Collins', 374, 2008, 'read', 4.33, 5);
+INSERT INTO goodreads_bookshelf VALUES (2, 'Normal People', 'Sally Rooney', 273, 2018, 'read', 3.82, 5);
+INSERT INTO goodreads_bookshelf VALUES (3, 'The Anthropocene Reviewed', 'John Green', 293, 2021, 'read', 4.34, 5);
+INSERT INTO goodreads_bookshelf VALUES (4, 'The Idiot', 'Elif Batuman', 423, 2017, 'to be read', 3.69, NULL);
+INSERT INTO goodreads_bookshelf VALUES (5, 'The Great Gatsby', 'F. Scott Fitzgerald', 128, 1925, 'read', 3.99, 5);
+INSERT INTO goodreads_bookshelf VALUES (6, 'Alone With You in the Ether', 'Olivie Blake', 248, 2020, 'to be read', 4.03, NULL);
+INSERT INTO goodreads_bookshelf VALUES (7, 'The Final Girl Support Group', 'Grady Hendrix', 342, 2021, 'read', 3.55, 3);
+INSERT INTO goodreads_bookshelf VALUES (8, 'Daisy Jones & The Six', 'Taylor Jenkins Reid', 355, 2019, 'read', 4.24, 4.5);
+INSERT INTO goodreads_bookshelf VALUES (9, 'Beach Read', 'Emily Henry', 358, 2020, 'read', 4.04, 5);
+INSERT INTO goodreads_bookshelf VALUES (10, 'Gone Girl', 'Gillian Flynn', 415, 2012, 'read', 4.12, 4.5);
+INSERT INTO goodreads_bookshelf VALUES (11, 'Last Night at the Telegraph Club', 'Malinda Lo', 409, 2021, 'to be read', 4.25, NULL);
+INSERT INTO goodreads_bookshelf VALUES (12, 'We Have Always Lived in the Castle', 'Shirely Jackson', 146, 1962, 'read', 3.95, 4);
+INSERT INTO goodreads_bookshelf VALUES (13, 'They Never Learn', 'Layne Fargo', 378, 2020, 'reading', 3.99, NULL);
+INSERT INTO goodreads_bookshelf VALUES (14, 'Sharp Objects', 'Gillian Flynn', 394, 2006, 'read', 4.01, 4);
+INSERT INTO goodreads_bookshelf VALUES (15, 'Everything I Know About Love', 'Dolly Alderton', 368, 2018, 'to be read', 4.09, NULL);
+
+
+/* What are the birthplaces and names of the author's I've read, ordered alphabetically by author's name?*/
+SELECT DISTINCT authors.name AS read_authors, authors.birthplace
+FROM authors
+JOIN goodreads_bookshelf
+ON authors.name=goodreads_bookshelf.author
+WHERE goodreads_bookshelf.bookshelf='read'
+ORDER BY authors.name ASC;
+
+
+/* How many books have the authors that I have read, released?*/
+SELECT DISTINCT authors.name AS read_authors,authors.number_of_books
+FROM authors
+JOIN goodreads_bookshelf
+ON authors.name=goodreads_bookshelf.author
+WHERE goodreads_bookshelf.bookshelf='read';
+
+/*What's the average personal rating of the books on the 'read'?*/
+SELECT AVG(personal_rating) AS average_personal_rating
+FROM goodreads_bookshelf;
+
+/* How many pages have I read from the list of books?*/
+SELECT SUM(page_count) AS total_pages_read
+FROM goodreads_bookshelf
+WHERE bookshelf='read';
+
+/* What's the average page count of the books on the 'read' shelf?*/
+SELECT AVG(page_count) AS average_page_count
+FROM goodreads_bookshelf
+WHERE bookshelf='read';
