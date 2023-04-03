@@ -1,0 +1,131 @@
+#In this database I'm exploring and querying the data to answer specific questions and to analyze the data.
+
+#1. How much money is the average order?
+SELECT AVG(Total) 
+FROM chinook.invoices;
+
+#2. What are the emails for the customers with invoices on or before 2009-11-07, and what is the date the order was placed?
+SELECT DISTINCT cust.Email,
+invoices.InvoiceDate
+FROM chinook.customers cust
+LEFT JOIN chinook.invoices invoices
+ON cust.CustomerId=invoices.CustomerId
+WHERE invoices.InvoiceDate <= '2009-11-07 23:59:59'
+ORDER BY invoices.InvoiceDate ASC;
+
+#3. How many invoices were there in 2010?
+SELECT COUNT(*) number_of_invoices
+ FROM chinook.invoices invoices
+ WHERE invoices.InvoiceDate BETWEEN '2010-01-01 00:00:00' AND '2010-12-31 23:59:59';
+ 
+
+#4. Which sales agent brought in the most money?
+SELECT 
+DISTINCT employees.EmployeeId,
+employees.FirstName,
+employees.LastName,
+SUM(invoice_items.UnitPrice*invoice_items.Quantity) employee_profit
+FROM chinook.Employees employees
+JOIN chinook.customers customers ON employees.EmployeeId=customers.SupportRepId
+JOIN chinook.invoices invoices ON customers.CustomerId=invoices.CustomerId
+JOIN chinook.invoice_items invoice_items ON invoices.InvoiceId=invoice_items.InvoiceId
+GROUP BY employees.EmployeeId
+ORDER BY employee_profit DESC;
+
+#5. What are the names of the Sales Agents?
+SELECT employees.FirstName,
+employees.LastName
+FROM chinook.employees employees
+WHERE employees.Title='Sales Support Agent';
+
+
+#6. How many orders has Employee 3 sold?
+SELECT
+employees.EmployeeId,
+employees.FirstName,
+employees.LastName,
+COUNT(invoices.InvoiceId) number_of_sales
+FROM chinook.Employees employees
+JOIN chinook.customers customers 
+ON employees.EmployeeId=customers.SupportRepId
+JOIN chinook.invoices invoices
+ON customers.CustomerId=invoices.CustomerId
+WHERE employees.EmployeeId=3;
+
+#7. What tracks has customer 5 bought? include the artist names in the results.
+SELECT
+customers.customerId,
+tracks.name,
+artists.name artist
+FROM chinook.customers customers
+JOIN chinook.invoices invoices
+ON customers.CustomerId=invoices.CustomerId
+JOIN chinook.invoice_items invoice_items
+ON invoice_items.InvoiceId=invoices.InvoiceId
+JOIN chinook.tracks tracks
+ON invoice_items.TrackId=tracks.trackId
+JOIN chinook.albums albums
+ON tracks.albumId=albums.AlbumId
+JOIN chinook.artists artists
+ON albums.ArtistId=artists.ArtistId
+WHERE invoices.customerId=5
+ORDER BY tracks.name ASC;
+
+
+#8. How much is the total company profit?
+SELECT SUM(invoices.Total) profit
+FROM chinook.invoices;
+
+#9. What are all the tracks in the database? Include name, artist, album and genre.
+SELECT 
+tracks.name song_name,
+albums.Title album_name,
+artists.name artist,
+genre.Name genre
+FROM chinook.tracks tracks
+JOIN chinook.albums albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists artists
+ON artists.ArtistId=albums.ArtistId
+JOIN chinook.genres genre
+ON genre.GenreId=tracks.GenreId;
+
+#10. What're the songs are on each playlist? Exclude duplicates if they're on the same playlist.
+SELECT DISTINCT tracks.name song,
+playlist.name playlist_title
+FROM chinook.tracks tracks
+JOIN chinook.playlist_track playlist_track
+ON tracks.TrackId=playlist_track.TrackId
+JOIN chinook.playlists playlist
+ON playlist.PlaylistId=playlist_track.PlaylistId
+ORDER BY song ASC;
+
+#11. What was the most profit made in a singular order? What's customer name, and the order date?
+SELECT DISTINCT
+invoices.Total,
+invoices.InvoiceDate,
+customers.FirstName,
+customers.LastName
+FROM chinook.invoices invoices
+JOIN chinook.customers customers
+ON invoices.CustomerId=customers.CustomerId
+ORDER BY invoices.Total DESC
+LIMIT 1;
+
+
+#12. What tracks were sold in the USA?
+SELECT DISTINCT
+invoices.BillingCountry,
+tracks.Name
+FROM chinook.invoices invoices
+JOIN chinook.invoice_items invoice_items
+ON invoices.InvoiceId=invoice_items.InvoiceId
+JOIN chinook.tracks tracks
+ON invoice_items.TrackId=tracks.TrackId
+WHERE BillingCountry='USA'
+ORDER BY tracks.Name ASC;
+
+
+
+
+
